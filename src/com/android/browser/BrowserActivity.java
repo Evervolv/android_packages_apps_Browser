@@ -942,6 +942,10 @@ public class BrowserActivity extends Activity
         // unregister network state listener
         unregisterReceiver(mNetworkStateIntentReceiver);
         WebView.disablePlatformNotifications();
+
+        if (mCustomView != null) {
+            mTabControl.getCurrentWebView().getWebChromeClient().onHideCustomView();
+        }
     }
 
     @Override
@@ -2273,36 +2277,45 @@ public class BrowserActivity extends Activity
                             StringBuilder sb = new StringBuilder(
                                     Browser.BookmarkColumns.URL + " = ");
                             DatabaseUtils.appendEscapedSQLString(sb, url);
-                            Cursor c = mResolver.query(Browser.BOOKMARKS_URI,
-                                    Browser.HISTORY_PROJECTION,
-                                    sb.toString(),
-                                    null,
-                                    null);
-                            if (c.moveToFirst()) {
-                                // The site has been visited before, so grab the
-                                // info from the database.
-                                Bitmap favicon = null;
-                                Bitmap thumbnail = null;
-                                String linkTitle = c.getString(Browser.
-                                        HISTORY_PROJECTION_TITLE_INDEX);
-                                byte[] data = c.getBlob(Browser.
-                                        HISTORY_PROJECTION_FAVICON_INDEX);
-                                if (data != null) {
-                                    favicon = BitmapFactory.decodeByteArray(
-                                            data, 0, data.length);
+                            Cursor c = null;
+                            try {
+                                c = mResolver.query(Browser.BOOKMARKS_URI,
+                                        Browser.HISTORY_PROJECTION,
+                                        sb.toString(),
+                                        null,
+                                        null);
+                                if (c.moveToFirst()) {
+                                    // The site has been visited before, so grab the
+                                    // info from the database.
+                                    Bitmap favicon = null;
+                                    Bitmap thumbnail = null;
+                                    String linkTitle = c.getString(Browser.
+                                            HISTORY_PROJECTION_TITLE_INDEX);
+                                    byte[] data = c.getBlob(Browser.
+                                            HISTORY_PROJECTION_FAVICON_INDEX);
+                                    if (data != null) {
+                                        favicon = BitmapFactory.decodeByteArray(
+                                                data, 0, data.length);
+                                    }
+                                    data = c.getBlob(Browser.
+                                            HISTORY_PROJECTION_THUMBNAIL_INDEX);
+                                    if (data != null) {
+                                        thumbnail = BitmapFactory.decodeByteArray(
+                                                data, 0, data.length);
+                                    }
+                                    sharePage(BrowserActivity.this,
+                                            linkTitle, url, favicon, thumbnail);
+                                } else {
+                                    Browser.sendString(BrowserActivity.this, url,
+                                            getString(
+                                            R.string.choosertitle_sharevia));
                                 }
-                                data = c.getBlob(Browser.
-                                        HISTORY_PROJECTION_THUMBNAIL_INDEX);
-                                if (data != null) {
-                                    thumbnail = BitmapFactory.decodeByteArray(
-                                            data, 0, data.length);
-                                }
-                                sharePage(BrowserActivity.this,
-                                        linkTitle, url, favicon, thumbnail);
-                            } else {
-                                Browser.sendString(BrowserActivity.this, url,
-                                        getString(
-                                        R.string.choosertitle_sharevia));
+                            } finally {
+                                if (c != null) c.close();
+                            }
+                            // close the cursor after its used
+                            if (c != null) {
+                                c.close();
                             }
                             break;
                         case R.id.copy_link_context_menu_id:
@@ -2768,7 +2781,6 @@ public class BrowserActivity extends Activity
     void onHideCustomView() {
         if (mCustomView == null)
             return;
-
         // Hide the custom view.
         mCustomView.setVisibility(View.GONE);
         // Remove the custom view from its container.
