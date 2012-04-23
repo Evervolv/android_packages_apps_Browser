@@ -27,6 +27,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -46,6 +47,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.BrowserContract;
 import android.provider.BrowserContract.Images;
@@ -438,7 +440,11 @@ public class Controller
     }
 
     int getMaxTabs() {
-        return mActivity.getResources().getInteger(R.integer.max_tabs);
+        Context mContext = mActivity.getApplicationContext();
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String numTabs = mPrefs.getString(PreferenceKeys.PREF_MAX_TABS, "20");
+        int t = Integer.parseInt(numTabs);
+        return t;
     }
 
     @Override

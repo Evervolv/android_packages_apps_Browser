@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!-- Options in the Maximum open tabs dialog box -->
+    <string-array name="pref_max_open_tabs_choices">
+            <item>5</item>
+            <item>10</item>
+            <item>15</item>
+            <item>20</item>
+            <item>25</item>
+            <item>30</item>
+    </string-array>
+    <!-- Do not translate -->
+    <string-array name="pref_max_open_tabs_values" translatable="false">
+            <item>5</item>
+            <item>10</item>
+            <item>15</item>
+            <item>20</item>
+            <item>25</item>
+            <item>30</item>
+    </string-array>
+</resources>

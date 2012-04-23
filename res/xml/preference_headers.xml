@@ -39,5 +39,8 @@
     <header android:fragment="com.android.browser.preferences.LabPreferencesFragment"
         android:title="@string/pref_lab_title"
     />
+    <header android:fragment="com.android.browser.preferences.TabsPreferencesFragment"
+            android:title="@string/tab_settings_title"
+    />
 
 </preference-headers>

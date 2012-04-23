@@ -989,4 +989,11 @@
     <!-- Content description for tab switcher transition [CHAR LIMIT=NONE] -->
     <string name="accessibility_transition_navscreen">Tab management</string>
 
+    <!-- Title for tab settings preference -->
+    <string name="tab_settings_title">Tab settings</string>
+    <!-- Dialog title -->
+    <string name="pref_max_open_tabs">Maximum open tabs</string>
+    <!-- Summary for Maximum open tabs -->
+    <string name="pref_max_open_tabs_summary">Configure the maximum allowable open tabs for the browser</string>
+
 </resources>
